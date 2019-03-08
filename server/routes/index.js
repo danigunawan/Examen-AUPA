@@ -1,11 +1,10 @@
 'use strict';
 
 const express = require('express');
-
 const FaceController = require('../controllers/FaceController');
 
 const api = express.Router();
 
-api.get('/', FaceController.getEmotion);
+api.post('/upload', FaceController.uploadImage);
 
 module.exports = api;
