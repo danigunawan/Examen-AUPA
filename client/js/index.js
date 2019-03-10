@@ -4,25 +4,38 @@ function uploadImage(event) {
   let form = document.getElementById("#formUpload");
   let data = new FormData(form);
   let imagedata = document.querySelector("input[type=file]").files[0];
+  let list = document.getElementById("#emotion");
   data.append("file", imagedata);
 
-  fetch("http://localhost:3000/api/upload", {
-    mode: "no-cors",
-    method: "POST",
-    headers: {
-      "Content-type": "undefined",
-      Accept: "application/json",
-      type: "formData"
-    },
-    body: data
-  })
-    .then((err, res) => {
-      if (err) throw err;
-      console.log(res);
-      return res.json();
+  ///////////////
+  axios
+    .post("http://localhost:3000/api/upload", data, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
     })
-    .then(res => {
-      console.log("AQUI: ", res);
+    .then(function(response) {
+      // por alguna razón lo retorna como string
+      data = JSON.parse(response.data)[0];
+
+      // obtener emociones
+      emotions = data.faceAttributes.emotion;
+
+      // ordernar obtener las 3 emociones más valoradas
+      emotions = sort(emotions);
+      console.table(emotions);
+      alert(emotions);
     });
+
   return false;
+}
+///////////////
+
+function sort(emotions) {
+  let arr = [];
+  for (const emotion in emotions) {
+    arr.push({ emotion: emotion, value: emotions[emotion] });
+  }
+  console.log(arr);
+  return arr.sort((a, b) => b.value - a.value);
 }
