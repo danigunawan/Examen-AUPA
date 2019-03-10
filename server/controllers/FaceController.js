@@ -1,7 +1,6 @@
 'use strict';
 
 const request = require('request');
-const fs = require('fs');
 const path = require('path');
 const config = require('../util/config');
 const multer = require('../multer');
@@ -10,26 +9,17 @@ const { reader } = require('../util/reader');
 const upload = multer.upload;
 
 function _upload(req, res) {
-  return new Promise((fullfill, reject) => {
+  return new Promise((fulfill, reject) => {
     upload(req, res, err => {
       if (err) {
         reject(err);
       } else if (req.file === undefined) {
         reject('No hay foto');
       }
-
-      console.log('Eso es toño, campeón, tqm');
       const file = req.file;
-      fullfill(file);
+      fulfill(file);
     });
   });
-}
-
-async function uploadImage(req, res) {
-  const file = await _upload(req);
-  const emotions = await getEmotion(file.originalname);
-
-  res.json(emotions);
 }
 
 function getEmotion(filename) {
@@ -61,6 +51,13 @@ function getEmotion(filename) {
       fulfill(jsonResponse);
     });
   });
+}
+
+async function uploadImage(req, res) {
+  const file = await _upload(req);
+  const emotions = await getEmotion(file.originalname);
+
+  res.json(emotions);
 }
 
 module.exports = { uploadImage };
