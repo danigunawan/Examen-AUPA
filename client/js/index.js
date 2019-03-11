@@ -4,10 +4,20 @@ function uploadImage(event) {
   let form = document.getElementById("#formUpload");
   let data = new FormData(form);
   let imagedata = document.querySelector("input[type=file]").files[0];
-  let list = document.getElementById("#emotion");
   data.append("file", imagedata);
 
-  ///////////////
+  document.getElementById("file").onchange = function() {
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+      // get loaded data and render thumbnail.
+      document.getElementById("image").src = e.target.result;
+    };
+
+    // read the image file as a data URL.
+    reader.readAsDataURL(this.files[0]);
+  };
+
   axios
     .post("http://localhost:3000/api/upload", data, {
       headers: {
@@ -23,13 +33,16 @@ function uploadImage(event) {
 
       // ordernar obtener las 3 emociones más valoradas
       emotions = sort(emotions);
+      let list = (document.getElementById("emotion").innerHTML = `
+      <li class="col s3">${emotions[0].emotion}: ${emotions[0].value}</li>
+      <li class="col s3">${emotions[1].emotion}: ${emotions[1].value}</li>
+      <li class="col s3">${emotions[2].emotion}: ${emotions[2].value}</li>`);
+
       console.table(emotions);
-      alert(emotions);
     });
 
   return false;
 }
-///////////////
 
 function sort(emotions) {
   let arr = [];
