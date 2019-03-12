@@ -6,18 +6,6 @@ function uploadImage(event) {
   let imagedata = document.querySelector("input[type=file]").files[0];
   data.append("file", imagedata);
 
-  document.getElementById("file").onchange = function() {
-    var reader = new FileReader();
-
-    reader.onload = function(e) {
-      // get loaded data and render thumbnail.
-      document.getElementById("image").src = e.target.result;
-    };
-
-    // read the image file as a data URL.
-    reader.readAsDataURL(this.files[0]);
-  };
-
   axios
     .post("http://localhost:3000/api/upload", data, {
       headers: {
@@ -51,4 +39,21 @@ function sort(emotions) {
   }
   console.log(arr);
   return arr.sort((a, b) => b.value - a.value);
+}
+
+function readURL(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+      $(".image-upload-wrap").hide();
+
+      $(".file-upload-image").attr("src", e.target.result);
+      $(".file-upload-content").show();
+
+      $(".image-title").html(input.files[0].name);
+    };
+
+    reader.readAsDataURL(input.files[0]);
+  }
 }

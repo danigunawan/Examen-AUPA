@@ -10,6 +10,7 @@ const upload = multer.upload;
 
 function _upload(req, res) {
   return new Promise((fulfill, reject) => {
+    // Funcion upload de multer.js
     upload(req, res, err => {
       if (err) {
         reject(err);
